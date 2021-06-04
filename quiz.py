@@ -82,7 +82,12 @@ class QuizHandler:
             async for msg in channel.history():
               entry = msg.content.splitlines()
               if len(entry) >= 2:
-                self.quiz.append(QuizEntry(entry[0], entry[1]))
+
+                # Randomize asking 
+                if bool(random.getrandbits(1)):
+                  self.quiz.append(QuizEntry(entry[0], entry[1]))
+                else: 
+                  self.quiz.append(QuizEntry(entry[1], entry[0]))
 
             if len(self.quiz) > 0:
               self.phase = 3
@@ -93,8 +98,10 @@ class QuizHandler:
       self.playerRespondedCount += 1
 
       # Check if response is correct
-      answer = re.escape(message.content.lower())
-      if re.match(rf"\b{answer}\b", re.escape(self.currentEntry.solution), re.IGNORECASE):
+      answer = re.escape(message.content)
+      solution = re.escape(self.currentEntry.solution)
+      print(answer + " == " + solution)
+      if re.search(rf"\b{answer}\b", solution, re.IGNORECASE):
         await message.add_reaction("✅")
       else:
         await message.add_reaction("❌")

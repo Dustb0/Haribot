@@ -57,7 +57,21 @@ class QuizHandler:
     self.reset_quiz()
     self.phase = 1
     await message.channel.send('**Die Goldbär Quizshow beginnt!** ' + self.random_emoji())
-    await message.channel.send('*Wie viele Mitspieler?*')
+
+    # Check if we're in DM mode
+    if type(message.channel) is discord.DMChannel:
+      self.phase = 2
+      self.playercount = 1
+      await message.channel.send("*Fragen aus welchem Kanal generieren?*")
+
+    else:
+      await message.channel.send('*Wie viele Mitspieler?*')
+
+  def retrieve_quiz_source(self, message, channelName):
+    for guild in self.client.guilds:
+      for channel in guild.channels:
+        if str(channel.type) == 'text' and str(channel).lower() == channelName:
+          return channel
 
   async def handle_quiz(self, message):
     if message.content.startswith('!q'):
@@ -70,29 +84,26 @@ class QuizHandler:
       await message.channel.send("*" + str(self.playercount) + ' Spieler :thumbsup: Fragen aus welchem Kanal generieren?*')
 
     elif self.phase == 2:
-      # Get channel name
-      channelName = message.clean_content.replace('#', '').lower()
-
       # Retrieve channel
-      for channel in message.channel.guild.channels:
-        if str(channel.type) == 'text' and str(channel).lower() == channelName:
-            print(channel)
+      channel = self.retrieve_quiz_source(message, message.clean_content.replace('#', '').lower())      
+
+      # Fill quiz
+      if channel is not None:
+        async for msg in channel.history():
+          entry = msg.content.splitlines()
+          print(entry)
+          if len(entry) >= 2:
+            # Randomize asking 
+            if bool(random.getrandbits(1)):
+              self.quiz.append(QuizEntry(entry[0], entry[1]))
+            else: 
+              self.quiz.append(QuizEntry(entry[1], entry[0]))
+
+        # Start quiz
+        if len(self.quiz) > 0:
+          self.phase = 3
+          await self.set_next_entry(message)      
             
-            # Fill quiz
-            async for msg in channel.history():
-              entry = msg.content.splitlines()
-              if len(entry) >= 2:
-
-                # Randomize asking 
-                if bool(random.getrandbits(1)):
-                  self.quiz.append(QuizEntry(entry[0], entry[1]))
-                else: 
-                  self.quiz.append(QuizEntry(entry[1], entry[0]))
-
-            if len(self.quiz) > 0:
-              self.phase = 3
-              await self.set_next_entry(message)
-
     elif self.phase == 3:
       # Answering questions
       self.playerRespondedCount += 1

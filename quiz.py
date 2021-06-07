@@ -74,10 +74,7 @@ class QuizHandler:
           return channel
 
   async def handle_quiz(self, message):
-    if message.content.startswith('!q'):
-      await self.end_quiz(message)
-        
-    elif self.phase == 1 and message.content.isnumeric():
+    if self.phase == 1 and message.content.isnumeric():
       # Setting player count
       self.phase = 2
       self.playercount = int(message.content)

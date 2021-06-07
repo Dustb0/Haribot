@@ -15,8 +15,11 @@ async def on_message(message):
     return
 
   # Quiz Handler
-  if message.content.startswith('!q') and not quizHandler.active():
-    await quizHandler.setup(message)
+  if message.content.startswith('!q'):
+    if quizHandler.active():
+      await quizHandler.end_quiz(message)
+    else:
+      await quizHandler.setup(message)
 
   elif quizHandler.active():
     await quizHandler.handle_quiz(message)

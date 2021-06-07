@@ -17,6 +17,7 @@ class QuizHandler:
     self.quiz = []
     self.client = client
     self.phase = 0
+    self.dmMode = False
 
   def active(self):
     return self.phase > 0
@@ -59,7 +60,8 @@ class QuizHandler:
     await message.channel.send('**Die Goldbär Quizshow beginnt!** ' + self.random_emoji())
 
     # Check if we're in DM mode
-    if type(message.channel) is discord.DMChannel:
+    self.dmMode = type(message.channel) is discord.DMChannel
+    if dmMode:
       self.phase = 2
       self.playercount = 1
       await message.channel.send("*Fragen aus welchem Kanal generieren?*")
@@ -119,6 +121,11 @@ class QuizHandler:
         await message.add_reaction("✅")
       else:
         await message.add_reaction("❌")
+
+        # If we're in DM Mode, add the question again if it was wrong
+        if self.dmMode:
+          self.quiz.append(self.currentEntry)
+
 
       # Check if everyone answered
       if self.playerRespondedCount == self.playercount:

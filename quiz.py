@@ -73,6 +73,15 @@ class QuizHandler:
         if str(channel.type) == 'text' and str(channel).lower() == channelName:
           return channel
 
+  def check_answer(self, answer):
+    print(answer + " == " + self.currentEntry.solution)
+
+    for solution in self.currentEntry.solution.split(","):
+      if answer.lower().strip() == solution.lower().strip():
+        return True
+
+    return False
+
   async def handle_quiz(self, message):
     if self.phase == 1 and message.content.isnumeric():
       # Setting player count
@@ -106,10 +115,7 @@ class QuizHandler:
       self.playerRespondedCount += 1
 
       # Check if response is correct
-      answer = re.escape(message.content)
-      solution = re.escape(self.currentEntry.solution)
-      print(answer + " == " + solution)
-      if re.search(rf"\b{answer}\b", solution, re.IGNORECASE):
+      if self.check_answer(message.content):
         await message.add_reaction("✅")
       else:
         await message.add_reaction("❌")

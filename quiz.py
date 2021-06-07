@@ -61,7 +61,7 @@ class QuizHandler:
 
     # Check if we're in DM mode
     self.dmMode = type(message.channel) is discord.DMChannel
-    if dmMode:
+    if self.dmMode:
       self.phase = 2
       self.playercount = 1
       await message.channel.send("*Fragen aus welchem Kanal generieren?*")

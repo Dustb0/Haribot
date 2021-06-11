@@ -117,5 +117,5 @@ class SpotlightQuizHandler(BaseQuizHandler):
         await self.set_next_entry(message)
       else:
         await message.channel.send(':boom::boom: **GAME OVER!** :boom::boom:')
-        self.end_quiz(message)
+        await self.end_quiz(message)
         

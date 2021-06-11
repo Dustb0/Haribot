@@ -1,29 +1,20 @@
 import discord
-import random
 import re
 import time
+import random
+from base_quiz import BaseQuizHandler, QuizEntry         
 
-class QuizEntry:
-  def __init__(self, ask, solution):
-    self.ask = ask
-    self.solution = solution
-
-class QuizHandler:
+class QuizHandler(BaseQuizHandler):
 
   def __init__(self, client):
+    BaseQuizHandler.__init__(self, client)
     self.playercount = 0
     self.playerRespondedCount = 0
-    self.currentEntry = None
-    self.quiz = []
-    self.client = client
     self.phase = 0
     self.dmMode = False
 
   def active(self):
     return self.phase > 0
-
-  def random_emoji(self):
-    return str(random.choice(self.client.emojis))
 
   def reset_quiz(self):
     self.quiz.clear()
@@ -75,15 +66,6 @@ class QuizHandler:
         if str(channel.type) == 'text' and str(channel).lower() == channelName:
           return channel
 
-  def check_answer(self, answer):
-    print(answer + " == " + self.currentEntry.solution)
-
-    for solution in self.currentEntry.solution.split(","):
-      if answer.lower().strip() == solution.lower().strip():
-        return True
-
-    return False
-
   async def handle_quiz(self, message):
     if self.phase == 1 and message.content.isnumeric():
       # Setting player count
@@ -97,15 +79,7 @@ class QuizHandler:
 
       # Fill quiz
       if channel is not None:
-        async for msg in channel.history():
-          entry = msg.content.splitlines()
-          print(entry)
-          if len(entry) >= 2:
-            # Randomize asking 
-            if bool(random.getrandbits(1)):
-              self.quiz.append(QuizEntry(entry[0], entry[1]))
-            else: 
-              self.quiz.append(QuizEntry(entry[1], entry[0]))
+        await self.fill_quiz(channel)
 
         # Start quiz
         if len(self.quiz) > 0:
@@ -125,7 +99,6 @@ class QuizHandler:
         # If we're in DM Mode, add the question again if it was wrong
         if self.dmMode:
           self.quiz.append(self.currentEntry)
-
 
       # Check if everyone answered
       if self.playerRespondedCount == self.playercount:

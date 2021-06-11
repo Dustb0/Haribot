@@ -12,6 +12,7 @@ class SpotlightQuizHandler(BaseQuizHandler):
     self.playerRespondedCount = 0
     self.phase = 0
     self.dmMode = False
+    self.players = []
 
   def active(self):
     return self.phase > 0
@@ -20,6 +21,7 @@ class SpotlightQuizHandler(BaseQuizHandler):
     self.quiz.clear()
     self.playercount = 0
     self.phase = 0
+    self.players.clear()
 
   async def set_next_entry(self, message):
     # Pick random entry
@@ -48,17 +50,8 @@ class SpotlightQuizHandler(BaseQuizHandler):
   async def setup(self, message):
     self.reset_quiz()
     self.phase = 1
-    await message.channel.send('**Die Goldbär Quizshow SPOTLIGHT-EDITION :cloud_lightning: beginnt!** ' + self.random_emoji())
-
-    # Check if we're in DM mode
-    self.dmMode = type(message.channel) is discord.DMChannel
-    if self.dmMode:
-      self.phase = 2
-      self.playercount = 1
-      await message.channel.send("*Fragen aus welchem Kanal generieren?*")
-
-    else:
-      await message.channel.send('*Wie viele Mitspieler?*')
+    await message.channel.send('**Die Goldbär Quizshow :cloud_lightning: SPOTLIGHT-EDITION :cloud_lightning: beginnt!** ' + self.random_emoji())
+    await message.channel.send('*Wie viele Mitspieler?*')
 
   def retrieve_quiz_source(self, message, channelName):
     for guild in self.client.guilds:
@@ -71,9 +64,19 @@ class SpotlightQuizHandler(BaseQuizHandler):
       # Setting player count
       self.phase = 2
       self.playercount = int(message.content)
-      await message.channel.send("*" + str(self.playercount) + ' Spieler :thumbsup: Fragen aus welchem Kanal generieren?*')
+      await message.channel.send("*" + str(self.playercount) + ' Spieler :thumbsup: Antworte auf diese Nachricht um mitzuspielen!*')
 
     elif self.phase == 2:
+      # Retrieve names
+      if not message.author.name in self.players:
+        self.players.append(message.author.name)
+        await message.channel.send("*" + message.author.name + ' spielt mit!*')
+
+        if len(self.players) == self.playercount:
+          await message.channel.send("**Fragen aus welchem Kanal generieren?**")
+          self.phase = 3
+
+    elif self.phase == 3:
       # Retrieve channel
       channel = self.retrieve_quiz_source(message, message.clean_content.replace('#', '').lower())      
 

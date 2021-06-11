@@ -33,7 +33,7 @@ async def on_message(message):
     else:
       await quizHandler.end_quiz(message)   
 
-  elif quizHandler.active():
+  elif quizHandler is not None and quizHandler.active():
     await quizHandler.handle_quiz(message)
 
 

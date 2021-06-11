@@ -9,16 +9,16 @@ class SpotlightQuizHandler(BaseQuizHandler):
   def __init__(self, client):
     BaseQuizHandler.__init__(self, client)
     self.playercount = 0
-    self.playerRespondedCount = 0
     self.dmMode = False
     self.players = []
+    self.currentPlayer = ""
     self.health = 3
 
   def reset_quiz(self):
     self.quiz.clear()
-    self.playercount = 0
     self.phase = 0
     self.players.clear()
+    self.currentPlayer = ""
     self.health = 3
 
   async def set_next_entry(self, message):
@@ -26,7 +26,7 @@ class SpotlightQuizHandler(BaseQuizHandler):
     self.currentEntry = None
     entryCount = len(self.quiz)
     selectedEntry = 0
-    self.playerRespondedCount = 0
+    self.currentPlayer = ""
 
     if entryCount == 0:
       await self.end_quiz(message)
@@ -38,8 +38,11 @@ class SpotlightQuizHandler(BaseQuizHandler):
     # Assign entry
     self.currentEntry = self.quiz.pop(selectedEntry)
 
+    # Assign player
+    self.currentPlayer = random.choice(self.players)
+
     # Display question
-    await message.channel.send(":question: **" + self.currentEntry.ask + "**")
+    await message.channel.send(":question: " + self.currentPlayer + "**: "  + self.currentEntry.ask + "**")
 
   async def end_quiz(self, message):
       self.reset_quiz()
@@ -61,10 +64,10 @@ class SpotlightQuizHandler(BaseQuizHandler):
     emojis = ""
     for index in range(3):
       if index > self.health:
-        emojis += ":black_heart:"
+        emojis += ":black_heart: "
       else:
-        emojis += ":heart:"
-    await message.channel.send("**HP:" + emojis)
+        emojis += ":heart: "
+    await message.channel.send("**HP:" + emojis + "**")
 
   async def handle_quiz(self, message):
     if self.phase == 1 and message.content.isnumeric():
@@ -97,7 +100,7 @@ class SpotlightQuizHandler(BaseQuizHandler):
           await self.write_health(message)
           await self.set_next_entry(message)      
             
-    elif self.phase == 4:
+    elif self.phase == 4 and message.author.name == self.currentPlayer:
       # Answering questions
       self.playerRespondedCount += 1
 
@@ -106,13 +109,16 @@ class SpotlightQuizHandler(BaseQuizHandler):
         await message.add_reaction("✅")
       else:
         await message.add_reaction("❌")
+        self.health -= 1
+        await self.write_health(message)
 
-        # If we're in DM Mode, add the question again if it was wrong
-        if self.dmMode:
-          self.quiz.append(self.currentEntry)
+      await message.channel.send('**Lösung:** ' + self.currentEntry.solution)
+      time.sleep(2)
 
-      # Check if everyone answered
-      if self.playerRespondedCount == self.playercount:
-        await message.channel.send('**Lösung:** ' + self.currentEntry.solution)
-        time.sleep(2)
+      # Check if still alive
+      if self.health > 0:
         await self.set_next_entry(message)
+      else:
+        await message.channel.send(':boom::boom: **GAME OVER!** :boom::boom:')
+        self.end_quiz(message)
+        

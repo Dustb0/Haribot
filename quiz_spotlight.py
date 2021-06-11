@@ -62,8 +62,8 @@ class SpotlightQuizHandler(BaseQuizHandler):
 
   async def write_health(self, message):
     emojis = ""
-    for index in range(2):
-      if index > self.health:
+    for index in range(3):
+      if index >= self.health:
         emojis += ":black_heart: "
       else:
         emojis += ":heart: "

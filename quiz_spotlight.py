@@ -101,9 +101,6 @@ class SpotlightQuizHandler(BaseQuizHandler):
           await self.set_next_entry(message)      
             
     elif self.phase == 4 and message.author.name == self.currentPlayer:
-      # Answering questions
-      self.playerRespondedCount += 1
-
       # Check if response is correct
       if self.check_answer(message.content):
         await message.add_reaction("✅")

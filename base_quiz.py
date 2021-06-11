@@ -11,6 +11,10 @@ class BaseQuizHandler:
     self.quiz = []
     self.client = client
     self.currentEntry = None
+    self.phase = 0
+
+  def active(self):
+    return self.phase > 0    
 
   def random_emoji(self):
     return str(random.choice(self.client.emojis))

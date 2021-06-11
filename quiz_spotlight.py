@@ -10,18 +10,16 @@ class SpotlightQuizHandler(BaseQuizHandler):
     BaseQuizHandler.__init__(self, client)
     self.playercount = 0
     self.playerRespondedCount = 0
-    self.phase = 0
     self.dmMode = False
     self.players = []
-
-  def active(self):
-    return self.phase > 0
+    self.health = 3
 
   def reset_quiz(self):
     self.quiz.clear()
     self.playercount = 0
     self.phase = 0
     self.players.clear()
+    self.health = 3
 
   async def set_next_entry(self, message):
     # Pick random entry
@@ -59,6 +57,15 @@ class SpotlightQuizHandler(BaseQuizHandler):
         if str(channel.type) == 'text' and str(channel).lower() == channelName:
           return channel
 
+  async def write_health(self, message):
+    emojis = ""
+    for index in range(3):
+      if index > self.health:
+        emojis += ":black_heart:"
+      else:
+        emojis += ":heart:"
+    await message.channel.send("**HP:" + emojis)
+
   async def handle_quiz(self, message):
     if self.phase == 1 and message.content.isnumeric():
       # Setting player count
@@ -86,10 +93,11 @@ class SpotlightQuizHandler(BaseQuizHandler):
 
         # Start quiz
         if len(self.quiz) > 0:
-          self.phase = 3
+          self.phase = 4
+          await self.write_health(message)
           await self.set_next_entry(message)      
             
-    elif self.phase == 3:
+    elif self.phase == 4:
       # Answering questions
       self.playerRespondedCount += 1
 

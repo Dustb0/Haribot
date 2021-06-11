@@ -10,11 +10,7 @@ class QuizHandler(BaseQuizHandler):
     BaseQuizHandler.__init__(self, client)
     self.playercount = 0
     self.playerRespondedCount = 0
-    self.phase = 0
     self.dmMode = False
-
-  def active(self):
-    return self.phase > 0
 
   def reset_quiz(self):
     self.quiz.clear()

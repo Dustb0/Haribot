@@ -37,10 +37,6 @@ class QuizHandler(BaseQuizHandler):
     # Display question
     await message.channel.send(":question: **" + self.currentEntry.ask + "**")
 
-  async def end_quiz(self, message):
-      self.reset_quiz()
-      await message.channel.send('**Das wars mit dem Quiz!** ' + self.random_emoji())
-
   async def setup(self, message):
     self.reset_quiz()
     self.phase = 1

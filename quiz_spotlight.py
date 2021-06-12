@@ -9,7 +9,6 @@ class SpotlightQuizHandler(BaseQuizHandler):
   def __init__(self, client):
     BaseQuizHandler.__init__(self, client)
     self.playercount = 0
-    self.dmMode = False
     self.players = []
     self.currentPlayer = ""
     self.health = 3
@@ -43,10 +42,6 @@ class SpotlightQuizHandler(BaseQuizHandler):
 
     # Display question
     await message.channel.send(":question: " + self.currentPlayer + "**: "  + self.currentEntry.ask + "**")
-
-  async def end_quiz(self, message):
-      self.reset_quiz()
-      await message.channel.send('**Das wars mit dem Quiz!** ' + self.random_emoji())
 
   async def setup(self, message):
     self.reset_quiz()

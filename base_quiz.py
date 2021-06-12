@@ -14,7 +14,11 @@ class BaseQuizHandler:
     self.phase = 0
 
   def active(self):
-    return self.phase > 0    
+    return self.phase > 0
+
+  async def end_quiz(self, message):
+      self.reset_quiz()
+      await message.channel.send('**Das wars mit dem Quiz!** ' + self.random_emoji())      
 
   def random_emoji(self):
     return str(random.choice(self.client.emojis))

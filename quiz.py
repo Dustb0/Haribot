@@ -35,7 +35,7 @@ class QuizHandler(BaseQuizHandler):
     self.currentEntry = self.quiz.pop(selectedEntry)
 
     # Display question
-    await message.channel.send(":question: **" + self.currentEntry.ask + "**")
+    await message.channel.send(self.get_ask_string())
 
   async def setup(self, message):
     self.reset_quiz()

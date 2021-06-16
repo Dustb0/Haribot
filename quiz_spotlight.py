@@ -41,7 +41,7 @@ class SpotlightQuizHandler(BaseQuizHandler):
     self.currentPlayer = random.choice(self.players)
 
     # Display question
-    await message.channel.send(":question: " + self.currentPlayer + "**: "  + self.currentEntry.ask + "**")
+    await message.channel.send(self.currentPlayer + "**: " + self.get_ask_string())
 
   async def setup(self, message):
     self.reset_quiz()

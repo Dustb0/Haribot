@@ -1,9 +1,12 @@
 import random
 
+from jisho import JishoApi
+
 class QuizEntry:
-  def __init__(self, ask, solution):
+  def __init__(self, ask, solution, audioFile):
     self.ask = ask
     self.solution = solution
+    self.audioFile = audioFile
 
 class BaseQuizHandler:
 
@@ -12,6 +15,7 @@ class BaseQuizHandler:
     self.client = client
     self.currentEntry = None
     self.phase = 0
+    self.jishoApi = JishoApi()
 
   def active(self):
     return self.phase > 0
@@ -28,11 +32,15 @@ class BaseQuizHandler:
       entry = msg.content.splitlines()
       
       if len(entry) >= 2:
+        jpWord = entry[0]
+        deWord = entry[1]
+        audio = self.jishoApi.getAudioFile(jpWord)
+
         # Randomize asking 
         if bool(random.getrandbits(1)):
-          self.quiz.append(QuizEntry(entry[0], entry[1]))
+          self.quiz.append(QuizEntry(jpWord, deWord, audio))
         else: 
-          self.quiz.append(QuizEntry(entry[1], entry[0]))   
+          self.quiz.append(QuizEntry(deWord, jpWord, audio))   
 
   def check_answer(self, answer):
     print(answer + " == " + self.currentEntry.solution)

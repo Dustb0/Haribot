@@ -28,22 +28,26 @@ class BaseQuizHandler:
     return str(random.choice(self.client.emojis))
 
   def get_ask_string(self):
-    audioFile = self.jishoApi.getAudioFile(self.currentEntry.ask)
+    ask = ""
+    answerLang = ""
+    audioFile = ""
+
+    # Check in which language the solution should be in 
+    if self.currentEntry.flipped:
+      audioFile = self.jishoApi.getAudioFile(self.currentEntry.solution)
+      answerLang = ":flag_jp:"
+    
+    else:
+      audioFile = self.jishoApi.getAudioFile(self.currentEntry.ask)
+      answerLang = ":flag_de:"
 
     # Check if audio file is present
     if len(audioFile) > 0:
-      
-      # Determine language to answer
-      answerLang = ""
-      if self.currentEntry.flipped:
-        answerLang = ":flag_jp:"
-      else:
-        answerLang = ":flag_de:"
+      ask = "**" + audioFile + "** antworte auf " + answerLang + "**"
+    else:
+      ask = "**" + self.currentEntry.ask + "**"
 
-      return ":question: **" + audioFile + "** answer in " + answerLang
-
-    else :
-      return ":question: **" + self.currentEntry.ask + "**"
+    return ":question: " + ask
 
   async def fill_quiz(self, channel):
     async for msg in channel.history():

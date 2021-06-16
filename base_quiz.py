@@ -3,11 +3,10 @@ import random
 from jisho import JishoApi
 
 class QuizEntry:
-  def __init__(self, ask, solution, audioFile, answerLang):
+  def __init__(self, ask, solution, flipped):
     self.ask = ask
     self.solution = solution
-    self.audioFile = audioFile
-    self.answerLang = answerLang
+    self.flipped = flipped
 
 class BaseQuizHandler:
 
@@ -29,7 +28,22 @@ class BaseQuizHandler:
     return str(random.choice(self.client.emojis))
 
   def get_ask_string(self):
-    return ":question: **" + self.currentEntry.ask + "**"
+    audioFile = self.jishoApi.getAudioFile(self.currentEntry.ask)
+
+    # Check if audio file is present
+    if len(audioFile) > 0:
+      
+      # Determine language to answer
+      answerLang = ""
+      if self.currentEntry.flipped:
+        answerLang = ":flag_jp:"
+      else:
+        answerLang = ":flag_de:"
+
+      return ":question: **" + audioFile + "** answer in " + answerLang
+
+    else :
+      return ":question: **" + self.currentEntry.ask + "**"
 
   async def fill_quiz(self, channel):
     async for msg in channel.history():
@@ -38,13 +52,12 @@ class BaseQuizHandler:
       if len(entry) >= 2:
         jpWord = entry[0]
         deWord = entry[1]
-        audio = self.jishoApi.getAudioFile(jpWord)
 
         # Randomize asking 
         if bool(random.getrandbits(1)):
-          self.quiz.append(QuizEntry(jpWord, deWord, audio, ":flag_de:"))
+          self.quiz.append(QuizEntry(jpWord, deWord, False))
         else: 
-          self.quiz.append(QuizEntry(deWord, jpWord, audio, ":flag_jp:"))   
+          self.quiz.append(QuizEntry(deWord, jpWord, True))   
 
   def check_answer(self, answer):
     print(answer + " == " + self.currentEntry.solution)

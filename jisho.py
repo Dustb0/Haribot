@@ -26,7 +26,3 @@ class JishoApi:
                 raise httpError
 
         return ""
-
-
-testApi = JishoApi()
-print(testApi.getAudioFile("病院"))

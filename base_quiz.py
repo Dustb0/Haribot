@@ -41,9 +41,13 @@ class BaseQuizHandler:
       audioFile = self.jishoApi.getAudioFile(self.currentEntry.ask)
       answerLang = ":flag_de:"
 
+    # If audio file is present only ask for a listening questions half of the time
+    if len(audioFile) > 0 and bool(random.getrandbits(1)):
+      audioFile = ""
+
     # Check if audio file is present
     if len(audioFile) > 0:
-      ask = "**" + audioFile + "** antworte auf " + answerLang + "**"
+      ask = "**" + audioFile + "** antworte auf " + answerLang
     else:
       ask = "**" + self.currentEntry.ask + "**"
 

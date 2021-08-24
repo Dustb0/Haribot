@@ -23,7 +23,8 @@ async def on_message(message):
   quizHandler = handlers.get(channelId, None)
 
   if message.content.startswith('!t') and quizHandler is None:
-    await command_translate(message)
+    channelName = message.content.replace('!t', '').strip()
+    await command_translate(message, retrieve_channel(channelName))
 
   if message.content.startswith('!q'):
     if quizHandler is None:
@@ -57,5 +58,10 @@ async def endHandler(quizHandler, channelId, message):
   handlers.pop(channelId)
   quizHandler = None
 
+def retrieve_channel(channelName):
+  for guild in client.guilds:
+    for channel in guild.channels:
+      if str(channel.type) == 'text' and str(channel).lower() == channelName:
+        return channel
 
 client.run(os.environ['TOKEN'])

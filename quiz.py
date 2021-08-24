@@ -52,12 +52,6 @@ class QuizHandler(BaseQuizHandler):
     else:
       await message.channel.send('*Wie viele Mitspieler?*')
 
-  def retrieve_quiz_source(self, message, channelName):
-    for guild in self.client.guilds:
-      for channel in guild.channels:
-        if str(channel.type) == 'text' and str(channel).lower() == channelName:
-          return channel
-
   async def handle_quiz(self, message):
     if self.phase == 1 and message.content.isnumeric():
       # Setting player count
@@ -67,7 +61,7 @@ class QuizHandler(BaseQuizHandler):
 
     elif self.phase == 2:
       # Retrieve channel
-      channel = self.retrieve_quiz_source(message, message.clean_content.replace('#', '').lower())      
+      channel = self.retrieve_quiz_source(message.clean_content.replace('#', '').lower())      
 
       # Fill quiz
       if channel is not None:

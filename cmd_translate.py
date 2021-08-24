@@ -3,7 +3,9 @@ import random
 
 async def command_translate(message, channel):
     list = await fill_quiz(channel)
+    print(len(list) + " elements")
     sentence = random.choice(list)
+    print(sentence)
     await message.channel.send(sentence)
 
 async def fill_quiz(channel):

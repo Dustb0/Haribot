@@ -2,7 +2,8 @@ from jisho import JishoApi
 import random
 
 async def command_translate(message, channel):
-    sentence = random.choice(fill_quiz(channel))
+    list = await fill_quiz(channel)
+    sentence = random.choice(list)
     await message.channel.send(sentence)
 
 async def fill_quiz(channel):

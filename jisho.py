@@ -26,3 +26,33 @@ class JishoApi:
                 raise httpError
 
         return ""
+
+    def getExampleSentence(self, word):
+        req = urllib.request.Request("https://jisho.org/word/" + quote(word))
+
+        try:
+            with urllib.request.urlopen(req) as response:
+                page = response.read()        
+                soup = BeautifulSoup(page, "html.parser")
+
+                # Grab first example sentence
+                sentenceElem = soup.find("div", {"class": "sentence"})
+                
+                # Find kana part without furigana
+                kanaElements = sentenceElem.select("span.unlinked")
+                kanaText = ""
+                for elem in kanaElements:
+                    kanaText += elem.getText()
+
+                # Get translation
+                enText = sentenceElem.select_one("li.english").getText()
+                return (kanaText, enText)
+                
+
+        except HTTPError as httpError:
+            if httpError.code == 404:
+                return ""
+            else: 
+                raise httpError
+
+        return ""        

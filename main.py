@@ -29,10 +29,7 @@ async def on_message(message):
       await quizHandler.setup(message)
 
     else:
-      # End quiz and remove from scope
-      await quizHandler.end_quiz(message)
-      handlers.pop(channelId)
-      quizHandler = None
+      await endHandler(quizHandler, channelId, message)
 
   if message.content.startswith('!sq'):
     if quizHandler is None:
@@ -42,13 +39,19 @@ async def on_message(message):
       await quizHandler.setup(message)
 
     else:
-      # End quiz and remove from scope
-      await quizHandler.end_quiz(message)   
-      handlers.pop(channelId)
-      quizHandler = None
+      await endHandler(quizHandler, channelId, message)
 
   elif quizHandler is not None and quizHandler.active():
     await quizHandler.handle_quiz(message)
+
+    # Check if handler just handled the last message
+    if not quizHandler.active():
+      await endHandler(quizHandler, channelId, message)
+
+async def endHandler(quizHandler, channelId, message):
+  await quizHandler.end_quiz(message)
+  handlers.pop(channelId)
+  quizHandler = None
 
 
 client.run(os.environ['TOKEN'])

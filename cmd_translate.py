@@ -21,6 +21,7 @@ async def fill_quiz(channel):
             sentence = jishoApi.getExampleSentence(jpWord)
 
             if sentence is not None:
+                print(sentence)
                 list.append(sentence[0] + " ||" + sentence[1] + "||")
 
     return list

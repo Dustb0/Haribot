@@ -16,7 +16,7 @@ async def fill_quiz(channel):
         # Add Japanese entries
         if len(entry) >= 2:
             jpWord = entry[0]
-            sentence = await jishoApi.getExampleSentence(jpWord)
+            sentence = jishoApi.getExampleSentence(jpWord)
 
             if sentence is not None:
                 list.append(sentence[0] + " ||" + sentence[1] + "||")

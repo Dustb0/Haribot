@@ -2,6 +2,7 @@ import os
 import discord
 from quiz import QuizHandler
 from quiz_spotlight import SpotlightQuizHandler
+from cmd_translate import command_translate
 
 client = discord.Client()
 handlers = {}
@@ -20,6 +21,9 @@ async def on_message(message):
   # Retrieve channel-scoped quiz handler
   channelId = message.channel.id
   quizHandler = handlers.get(channelId, None)
+
+  if message.content.startswith('!t') and quizHandler is None:
+    await command_translate(message)
 
   if message.content.startswith('!q'):
     if quizHandler is None:

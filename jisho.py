@@ -38,6 +38,9 @@ class JishoApi:
                 # Grab first example sentence
                 sentenceElem = soup.find("div", {"class": "sentence"})
                 
+                if sentenceElem is None:
+                    return None
+
                 # Find kana part without furigana
                 kanaElements = sentenceElem.select("span.unlinked")
                 kanaText = ""

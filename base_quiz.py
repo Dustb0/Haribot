@@ -22,16 +22,7 @@ class BaseQuizHandler:
 
   async def end_quiz(self, message):
       self.reset_quiz()
-      await message.channel.send('**Das wars mit dem Quiz!** ' + self.random_emoji())      
-
-  def retrieve_quiz_source(self, channelName):
-    for guild in self.client.guilds:
-      for channel in guild.channels:
-        if str(channel.type) == 'text' and str(channel).lower() == channelName:
-          return channel
-
-  def random_emoji(self):
-    return str(random.choice(self.client.emojis))
+      await message.channel.send('**Das wars mit dem Quiz!** ' + self.client.random_emoji())
 
   def get_ask_string(self):
     ask = ""

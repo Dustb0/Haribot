@@ -3,8 +3,9 @@ import discord
 from quiz import QuizHandler
 from quiz_spotlight import SpotlightQuizHandler
 from cmd_translate import command_translate
+from twitch_client_ex import TwitchClientEx
 
-client = discord.Client()
+client = TwitchClientEx(discord.Client())
 handlers = {}
 
 @client.event
@@ -24,7 +25,7 @@ async def on_message(message):
 
   if message.content.startswith('!t') and quizHandler is None:
     channelName = message.content.replace('!t', '').strip()
-    await command_translate(message, retrieve_channel(channelName))
+    await command_translate(message, client.get_channel(channelName))
 
   if message.content.startswith('!q'):
     if quizHandler is None:
@@ -58,10 +59,5 @@ async def endHandler(quizHandler, channelId, message):
   handlers.pop(channelId)
   quizHandler = None
 
-def retrieve_channel(channelName):
-  for guild in client.guilds:
-    for channel in guild.channels:
-      if str(channel.type) == 'text' and str(channel).lower() == channelName:
-        return channel
 
 client.run(os.environ['TOKEN'])

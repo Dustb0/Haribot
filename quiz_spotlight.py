@@ -46,7 +46,7 @@ class SpotlightQuizHandler(BaseQuizHandler):
   async def setup(self, message):
     self.reset_quiz()
     self.phase = 1
-    await message.channel.send('**Die Goldbär Quizshow :cloud_lightning: SPOTLIGHT-EDITION :cloud_lightning: beginnt!** ' + self.random_emoji())
+    await message.channel.send('**Die Goldbär Quizshow :cloud_lightning: SPOTLIGHT-EDITION :cloud_lightning: beginnt!** ' + self.client.random_emoji())
     await message.channel.send('*Wie viele Mitspieler?*')
 
   async def write_health(self, message):
@@ -77,7 +77,7 @@ class SpotlightQuizHandler(BaseQuizHandler):
 
     elif self.phase == 3:
       # Retrieve channel
-      channel = self.retrieve_quiz_source(message.clean_content.replace('#', '').lower())      
+      channel = self.client.get_channel(message.clean_content.replace('#', '').lower())      
 
       # Fill quiz
       if channel is not None:

@@ -40,7 +40,7 @@ class QuizHandler(BaseQuizHandler):
   async def setup(self, message):
     self.reset_quiz()
     self.phase = 1
-    await message.channel.send('**Die Goldbär Quizshow beginnt!** ' + self.random_emoji())
+    await message.channel.send('**Die Goldbär Quizshow beginnt!** ' + self.client.random_emoji())
 
     # Check if we're in DM mode
     self.dmMode = type(message.channel) is discord.DMChannel
@@ -61,7 +61,7 @@ class QuizHandler(BaseQuizHandler):
 
     elif self.phase == 2:
       # Retrieve channel
-      channel = self.retrieve_quiz_source(message.clean_content.replace('#', '').lower())      
+      channel = self.client.get_channel(message.clean_content.replace('#', '').lower())      
 
       # Fill quiz
       if channel is not None:

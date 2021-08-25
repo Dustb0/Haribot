@@ -8,7 +8,7 @@ class TwitchClientEx:
 
     # Retrieve a channel object by a channel name
     def get_channel(self, channelName):
-        for guild in client.guilds:
+        for guild in self.client.guilds:
             for channel in guild.channels:
                 if str(channel.type) == 'text' and str(channel).lower() == channelName:
                     return channel

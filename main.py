@@ -17,7 +17,7 @@ async def on_ready():
 async def on_message(message):
   global handlers
 
-  if message.author == client.user:
+  if message.author == client.get().user:
     return
 
   # Retrieve channel-scoped quiz handler

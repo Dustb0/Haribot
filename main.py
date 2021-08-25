@@ -61,4 +61,4 @@ async def endHandler(quizHandler, channelId, message):
   quizHandler = None
 
 
-client.run(os.environ['TOKEN'])
+client.get().run(os.environ['TOKEN'])

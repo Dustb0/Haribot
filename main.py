@@ -5,14 +5,15 @@ from quiz_spotlight import SpotlightQuizHandler
 from cmd_translate import command_translate
 from twitch_client_ex import TwitchClientEx
 
-client = TwitchClientEx(discord.Client())
+discordClient = discord.Client()
+client = TwitchClientEx(discordClient)
 handlers = {}
 
-@client.event
+@discordClient.event
 async def on_ready():
   print("Logged in")
 
-@client.event
+@discordClient.event
 async def on_message(message):
   global handlers
 

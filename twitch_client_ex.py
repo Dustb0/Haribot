@@ -16,3 +16,6 @@ class TwitchClientEx:
     # Get random emoji from the server's emojis
     def random_emoji(self):
         return str(random.choice(self.client.emojis))
+
+    def get(self):
+        return self.client

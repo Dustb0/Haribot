@@ -17,10 +17,10 @@ async def get_sentence(channel):
         if len(entry) >= 2:
             list.append(entry[0])
 
-    # Get random entries until we get one with an example sentence
-    while True:
-        jpWord = random.choice(list)
+    # Randomize list
+    random.shuffle(list)
+    for jpWord in list:
         sentence = jishoApi.getExampleSentence(jpWord)
 
         if sentence is not None and len(sentence) == 2:
-            list.append(sentence[0] + " ||" + sentence[1] + "||")
+            return sentence[0] + " ||" + sentence[1] + "||"

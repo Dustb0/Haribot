@@ -23,4 +23,4 @@ async def get_sentence(channel):
         sentence = jishoApi.getExampleSentence(jpWord)
 
         if sentence is not None and len(sentence) == 2:
-                list.append(sentence[0] + " ||" + sentence[1] + "||")
+            list.append(sentence[0] + " ||" + sentence[1] + "||")

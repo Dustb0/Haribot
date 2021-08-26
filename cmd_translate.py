@@ -2,12 +2,11 @@ from jisho import JishoApi
 import random
 
 async def command_translate(message, channel):
-    list = await fill_quiz(channel)
-    sentence = random.choice(list)
+    sentence = await get_sentence(channel)
     print(sentence)
     await message.channel.send(sentence)
 
-async def fill_quiz(channel):
+async def get_sentence(channel):
     list = []
     jishoApi = JishoApi()
 
@@ -16,10 +15,12 @@ async def fill_quiz(channel):
 
         # Add Japanese entries
         if len(entry) >= 2:
-            jpWord = entry[0]
-            sentence = jishoApi.getExampleSentence(jpWord)
+            list.append(entry[0])
 
-            if sentence is not None and len(sentence) == 2:
+    # Get random entries until we get one with an example sentence
+    while True:
+        jpWord = random.choice(list)
+        sentence = jishoApi.getExampleSentence(jpWord)
+
+        if sentence is not None and len(sentence) == 2:
                 list.append(sentence[0] + " ||" + sentence[1] + "||")
-
-    return list

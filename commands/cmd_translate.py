@@ -11,9 +11,10 @@ async def get_sentence(jishoApi, channel):
         # Add Japanese entries
         if len(entry) >= 2:
             list.append(entry[0])
+
     # Randomize list
     random.shuffle(list)
     for jpWord in list:
-        sentence = self.jishoApi.getExampleSentence(jpWord)
+        sentence = jishoApi.getExampleSentence(jpWord)
         if sentence is not None and len(sentence) == 2:
             return sentence[0] + "     ||" + sentence[1] + "||"

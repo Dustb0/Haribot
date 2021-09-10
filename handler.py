@@ -10,7 +10,7 @@ class Handler:
         self.jishoApi = JishoApi()
         self.activeCommands = {}
 
-    def process_message(self, message):
+    async def process_message(self, message):
         # Check command
         if message.content.startswith('!translateQuiz'):
             channelName = message.content.replace('!translateQuiz', '').strip()

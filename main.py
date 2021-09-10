@@ -30,7 +30,7 @@ async def on_message(message):
   if handler is None:
     handler = Handler(client)
 
-  handler.process_message(message)
+  await handler.process_message(message)
 
 
 client.get().run(os.environ['TOKEN'])

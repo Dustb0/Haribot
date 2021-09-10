@@ -1,3 +1,4 @@
+import discord
 import random
 
 # Wrapper for the Twitch client with advanced functionality
@@ -14,7 +15,7 @@ class TwitchClientEx:
                     return channel
 
     # Returns a list of tuples containing 
-    async def get_vocabulary(self, channel):
+    async def get_vocabulary(self, channel, randomize):
         list = []
         async for msg in channel.history():
             entry = msg.content.splitlines()
@@ -24,7 +25,14 @@ class TwitchClientEx:
                 deWord = entry[1]
                 list.append((jpWord, deWord))
 
+        if randomize:
+            # Randomize list
+            random.shuffle(list)
+
         return list
+
+    def is_dm_channel(self, channel):
+        return type(channel) is discord.DMChannel
 
     # Get random emoji from the server's emojis
     def random_emoji(self):

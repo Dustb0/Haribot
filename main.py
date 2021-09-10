@@ -29,6 +29,7 @@ async def on_message(message):
 
   if handler is None:
     handler = Handler(client)
+    handlers[channelId] = handler
 
   await handler.process_message(message)
 

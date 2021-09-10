@@ -14,4 +14,4 @@ class Handler:
         # Check command
         if message.content.startswith('!translateQuiz'):
             channelName = message.content.replace('!translateQuiz', '').strip()
-            process_translate_quiz(self.jishoApi, message, channelName)
+            await process_translate_quiz(self.jishoApi, message, channelName)

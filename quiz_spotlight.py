@@ -46,8 +46,8 @@ class SpotlightQuizHandler(BaseQuizHandler):
   async def setup(self, message):
     self.reset_quiz()
     self.phase = 1
-    await message.channel.send('**Die Goldbär Quizshow :cloud_lightning: SPOTLIGHT-EDITION :cloud_lightning: beginnt!** ' + self.client.random_emoji())
-    await message.channel.send('*Wie viele Mitspieler?*')
+    await message.channel.send('**ゴルヅベアのクイズショウ :cloud_lightning: SPOTLIGHT-EDITION :cloud_lightning: を始めましょう！** ' + self.client.random_emoji())
+    await message.channel.send('*何人ですか?*')
 
   async def write_health(self, message):
     emojis = ""
@@ -63,7 +63,7 @@ class SpotlightQuizHandler(BaseQuizHandler):
       # Setting player count
       self.phase = 2
       self.playercount = int(message.content)
-      await message.channel.send("*" + str(self.playercount) + ' Spieler :thumbsup: Antworte auf diese Nachricht um mitzuspielen!*')
+      await message.channel.send("*" + str(self.playercount) + ' :thumbsup: Antworte auf diese Nachricht um mitzuspielen!*')
 
     elif self.phase == 2:
       # Retrieve names
@@ -72,7 +72,7 @@ class SpotlightQuizHandler(BaseQuizHandler):
         await message.channel.send("*" + message.author.name + ' spielt mit!*')
 
         if len(self.players) == self.playercount:
-          await message.channel.send("**Fragen aus welchem Kanal generieren?**")
+          await message.channel.send("**どのチャンネル?**")
           self.phase = 3
 
     elif self.phase == 3:
@@ -98,7 +98,7 @@ class SpotlightQuizHandler(BaseQuizHandler):
         self.health -= 1
         await self.write_health(message)
 
-      await message.channel.send('**Lösung:** ' + self.currentEntry.solution)
+      await message.channel.send('**答え:** ' + self.currentEntry.solution)
       time.sleep(2)
 
       # Check if still alive

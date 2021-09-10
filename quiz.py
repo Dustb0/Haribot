@@ -40,24 +40,24 @@ class QuizHandler(BaseQuizHandler):
   async def setup(self, message):
     self.reset_quiz()
     self.phase = 1
-    await message.channel.send('**Die Goldbär Quizshow beginnt!** ' + self.client.random_emoji())
+    await message.channel.send('**ゴルヅベアのクイズショウを始めましょう！** ' + self.client.random_emoji())
 
     # Check if we're in DM mode
     self.dmMode = type(message.channel) is discord.DMChannel
     if self.dmMode:
       self.phase = 2
       self.playercount = 1
-      await message.channel.send("*Fragen aus welchem Kanal generieren?*")
+      await message.channel.send("*どのチャンネル？?*")
 
     else:
-      await message.channel.send('*Wie viele Mitspieler?*')
+      await message.channel.send('*何人ですか?*')
 
   async def handle_quiz(self, message):
     if self.phase == 1 and message.content.isnumeric():
       # Setting player count
       self.phase = 2
       self.playercount = int(message.content)
-      await message.channel.send("*" + str(self.playercount) + ' Spieler :thumbsup: Fragen aus welchem Kanal generieren?*')
+      await message.channel.send("*" + str(self.playercount) + ' :thumbsup: どのチャンネル?*')
 
     elif self.phase == 2:
       # Retrieve channel
@@ -88,6 +88,6 @@ class QuizHandler(BaseQuizHandler):
 
       # Check if everyone answered
       if self.playerRespondedCount == self.playercount:
-        await message.channel.send('**Lösung:** ' + self.currentEntry.solution)
+        await message.channel.send('**答え:** ' + self.currentEntry.solution)
         time.sleep(2)
         await self.set_next_entry(message)

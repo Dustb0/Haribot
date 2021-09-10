@@ -22,7 +22,7 @@ class BaseQuizHandler:
 
   async def end_quiz(self, message):
       self.reset_quiz()
-      await message.channel.send('**Das wars mit dem Quiz!** ' + self.client.random_emoji())
+      await message.channel.send('**クイズは仕上がる!** ' + self.client.random_emoji())
 
   def get_ask_string(self):
     ask = ""

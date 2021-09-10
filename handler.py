@@ -8,10 +8,13 @@ class Handler:
     
     def __init__(self, client):
         self.jishoApi = JishoApi()
+        self.client = client;
         self.activeCommands = {}
 
     async def process_message(self, message):
         # Check command
         if message.content.startswith('!translateQuiz'):
             channelName = message.content.replace('!translateQuiz', '').strip()
-            await process_translate_quiz(self.jishoApi, message, channelName)
+            channel = self.client.get_channel(channelName)
+
+            await process_translate_quiz(self.jishoApi, message, channel)

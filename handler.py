@@ -17,4 +17,4 @@ class Handler:
             channelName = message.content.replace('!translateQuiz', '').strip()
             channel = self.client.get_channel(channelName)
 
-            await process_translate_quiz(self.jishoApi, message, channel)
+            await process_translate_quiz(self.jishoApi, self.client, message, channel)

@@ -57,7 +57,7 @@ class Handler:
         # Instantiate quiz command
         if await self.verify_channel_name_arg(channelName, message):
             channel = self.client.get_channel(channelName)
-            players = params[2] if len(params) > 2 and self.client.is_dm_channel(channel) else 1
+            players = int(params[2]) if len(params) > 2 and not self.client.is_dm_channel(channel) else 1
             
             quiz = CommandQuiz(self.client, self.jishoApi, message.channel, players)
             await quiz.load(channel)

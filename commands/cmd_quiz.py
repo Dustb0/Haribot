@@ -70,6 +70,9 @@ class CommandQuiz():
             await message.add_reaction("❌")
 
         # Check if everyone answered
+        print("playerCount: " + str(self.playerCount))
+        print("playerRespondedCount: " + str(self.playerRespondedCount))
+        print("end?" + str(self.playerRespondedCount == self.playerCount))
         if self.playerRespondedCount == self.playerCount:
             await self.quizChannel.send('答え:  ** ' + self.currentAnswer + '**')
 

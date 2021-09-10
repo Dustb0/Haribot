@@ -1,4 +1,4 @@
-from jisho import JishoApi
+from api.jisho import JishoApi
 from commands.cmd_translate import process_translate_quiz
 from commands.cmd_quiz import CommandQuiz
 

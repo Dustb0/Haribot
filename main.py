@@ -1,6 +1,6 @@
 import os
 import discord
-from twitch_client_ex import TwitchClientEx
+from api.twitch_client_ex import TwitchClientEx
 from handler import Handler
 
 # Instantiate client

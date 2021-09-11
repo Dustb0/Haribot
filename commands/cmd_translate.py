@@ -10,6 +10,6 @@ async def get_sentence(jishoApi, client, channel):
 
     for entry in list:
         jpWord = entry[0]
-        sentence = jishoApi.getExampleSentence(jpWord)
+        sentence = jishoApi.get_example_sentence(jpWord)
         if sentence is not None and len(sentence) == 2:
             return sentence[0] + "     ||" + sentence[1] + "||"

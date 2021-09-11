@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 class JishoApi:
 
-    def getAudioFile(self, word):
+    def get_audio_file(self, word):
+        word = word.split(",")[0]
         req = urllib.request.Request("https://jisho.org/word/" + quote(word))
 
         try:
@@ -27,7 +28,33 @@ class JishoApi:
 
         return ""
 
-    def getExampleSentence(self, word):
+    def get_conjugations(self, word):
+        word = word.split(",")[0]
+        req = urllib.request.Request("https://jisho.org/word/" + quote(word))
+
+        try:
+            with urllib.request.urlopen(req) as response:
+                page = response.read()        
+                soup = BeautifulSoup(page, "html.parser")
+
+                # Search for conjugation info
+                inflectionContainer = soup.find("div", {"id": "inflection_modal"})
+
+                if inflectionContainer is None:
+                    return ""
+
+                
+
+
+        except HTTPError as httpError:
+            if httpError.code == 404:
+                return ""
+            else: 
+                raise httpError
+
+        return ""            
+
+    def get_example_sentence(self, word):
         req = urllib.request.Request("https://jisho.org/word/" + quote(word))
 
         try:

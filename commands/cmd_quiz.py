@@ -24,7 +24,7 @@ class CommandQuiz():
         self.playerRespondedCount = 0
 
         # Check if entry has an audio file
-        audioFile = self.jishoApi.getAudioFile(currentEntry[0])
+        audioFile = self.jishoApi.get_audio_file(currentEntry[0])
 
         # Words with an audio are the preferred question type.
         # If audio exists chose this question type 50% of the time

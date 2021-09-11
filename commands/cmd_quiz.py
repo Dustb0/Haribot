@@ -1,4 +1,20 @@
 import random
+from api.jisho import Conjugations
+
+CONJUGATION_STRINGS = {
+    Conjugations.PLAIN_NONPAST: '[Non-Keigo] Nonpast +',
+    Conjugations.PLAIN_NEGATIVE: '[Non-Keigo] Nonpast -',
+    Conjugations.PLAIN_PAST: '[Non-Keigo] Past +',
+    Conjugations.PLAIN_PAST_NEGATIVE: '[Non-Keigo] Past -',
+    Conjugations.PLAIN_TE: '[Non-Keigo] Te-Form',
+    Conjugations.PLAIN_TAI: '[Non-Keigo] Tai-Form',
+    Conjugations.KEIGO_NONPAST: '[Keigo] Nonpast +',
+    Conjugations.KEIGO_NEGATIVE: '[Keigo] Nonpast -',
+    Conjugations.KEIGO_PAST: '[Keigo] Past +',
+    Conjugations.KEIGO_PAST_NEGATIVE: '[Keigo] Past -',
+    Conjugations.KEIGO_TE: '[Keigo] Te-Form',
+    Conjugations.KEIGO_TAI: '[Keigo] Tai-Form'
+}
 
 class CommandQuiz():
 
@@ -33,15 +49,26 @@ class CommandQuiz():
             questionMessage = self.client.random_emoji() + " <( 聞いて訳してください )\n" + audioFile
 
         else:
-            # Decide if we're asking for Japanese or German
-            if bool(random.getrandbits(1)):
-                # Japanese -> German
-                self.currentAnswer = currentEntry[1]
-                questionMessage = ":question: " + currentEntry[0]
+            # Check if it's a verb with conjugations we could ask for
+            conjugations = self.jishoApi.get_conjugations(currentEntry[0])
+
+            if len(conjugations) > 0 and bool(random.getrandbits(1)):
+                # Determine a random conjugation
+                conjugationKey = random.choice(list(Conjugations))
+                self.currentAnswer = conjugations[conjugationKey]
+                print(CONJUGATION_STRINGS[conjugationKey] + ": " + self.currentAnswer)
+                questionMessage = ":exclamation: " + currentEntry[1] + " in **" + CONJUGATION_STRINGS[conjugationKey] + "**"
+
             else:
-                # German -> Japanese
-                self.currentAnswer = currentEntry[0]
-                questionMessage = ":question: " + currentEntry[1]
+                # Decide if we're asking for Japanese or German
+                if bool(random.getrandbits(1)):
+                    # Japanese -> German
+                    self.currentAnswer = currentEntry[1]
+                    questionMessage = ":question: " + currentEntry[0]
+                else:
+                    # German -> Japanese
+                    self.currentAnswer = currentEntry[0]
+                    questionMessage = ":question: " + currentEntry[1]
 
         # Write out message
         await self.quizChannel.send(questionMessage)
@@ -70,9 +97,6 @@ class CommandQuiz():
             await message.add_reaction("❌")
 
         # Check if everyone answered
-        print("playerCount: " + str(self.playerCount))
-        print("playerRespondedCount: " + str(self.playerRespondedCount))
-        print("end?" + str(self.playerRespondedCount == self.playerCount))
         if self.playerRespondedCount == self.playerCount:
             await self.quizChannel.send('答え:  ** ' + self.currentAnswer + '**')
 

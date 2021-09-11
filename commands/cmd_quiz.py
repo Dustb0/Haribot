@@ -43,8 +43,8 @@ class CommandQuiz():
         audioFile = self.jishoApi.get_audio_file(currentEntry[0])
 
         # Words with an audio are the preferred question type.
-        # If audio exists chose this question type 50% of the time
-        if len(audioFile) > 0 and bool(random.getrandbits(1)):
+        # If audio exists chose this question type 40% of the time
+        if len(audioFile) > 0 and random.randint(1, 100) <= 40:
             self.currentAnswer = currentEntry[1]
             questionMessage = self.client.random_emoji() + " <( 聞いて訳してください )\n" + audioFile
 
@@ -52,7 +52,7 @@ class CommandQuiz():
             # Check if it's a verb with conjugations we could ask for
             conjugations = self.jishoApi.get_conjugations(currentEntry[0])
 
-            if len(conjugations) > 0 and bool(random.getrandbits(1)):
+            if len(conjugations) > 0:
                 # Determine a random conjugation
                 conjugationKey = random.choice(list(Conjugations))
                 self.currentAnswer = conjugations[conjugationKey]

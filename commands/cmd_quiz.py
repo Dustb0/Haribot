@@ -52,7 +52,7 @@ class CommandQuiz():
             # Check if it's a verb with conjugations we could ask for
             conjugations = self.jishoApi.get_conjugations(currentEntry[0])
 
-            if len(conjugations) > 0:
+            if len(conjugations) > 0 and bool(random.getrandbits(1)):
                 # Determine a random conjugation
                 conjugationKey = random.choice(list(Conjugations))
                 self.currentAnswer = conjugations[conjugationKey]

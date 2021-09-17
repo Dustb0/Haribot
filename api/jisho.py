@@ -71,7 +71,6 @@ class JishoApi:
                     return conjugations
 
                 # Gather inflections: Non-keigo
-                plainInflections = inflectionRows[0].select("tr:not(.bg-gray-200)")
                 conjugations[Conjugations.PLAIN_NONPAST] = inflectionRows[0].select_one('.ps-3').getText()
                 conjugations[Conjugations.PLAIN_NEGATIVE] = inflectionRows[1].select_one('.ps-3').getText()
                 conjugations[Conjugations.PLAIN_PAST] = inflectionRows[2].select_one('.ps-3').getText()
@@ -80,12 +79,12 @@ class JishoApi:
                 conjugations[Conjugations.PLAIN_TAI] = inflectionRows[5].select_one('.ps-3').getText()
 
                 # Gather inflections: Keigo
-                conjugations[Conjugations.KEIGO_NONPAST] = inflectionRows[14].select_one('.ps-3').getText()
-                conjugations[Conjugations.KEIGO_NEGATIVE] = inflectionRows[15].select_one('.ps-3').getText()
-                conjugations[Conjugations.KEIGO_PAST] = inflectionRows[16].select_one('.ps-3').getText()
-                conjugations[Conjugations.KEIGO_PAST_NEGATIVE] = inflectionRows[17].select_one('.ps-3').getText()
-                conjugations[Conjugations.KEIGO_TE] = inflectionRows[18].select_one('.ps-3').getText()
-                conjugations[Conjugations.KEIGO_TAI] = inflectionRows[19].select_one('.ps-3').getText()
+                conjugations[Conjugations.KEIGO_NONPAST] = inflectionRows[13].select_one('.ps-3').getText()
+                conjugations[Conjugations.KEIGO_NEGATIVE] = inflectionRows[14].select_one('.ps-3').getText()
+                conjugations[Conjugations.KEIGO_PAST] = inflectionRows[15].select_one('.ps-3').getText()
+                conjugations[Conjugations.KEIGO_PAST_NEGATIVE] = inflectionRows[16].select_one('.ps-3').getText()
+                conjugations[Conjugations.KEIGO_TE] = inflectionRows[17].select_one('.ps-3').getText()
+                conjugations[Conjugations.KEIGO_TAI] = inflectionRows[18].select_one('.ps-3').getText()
 
         except HTTPError as httpError:
             if httpError.code == 404:

@@ -56,9 +56,23 @@ class Handler:
 
         # Instantiate quiz command
         if await self.verify_channel_name_arg(channelName, message):
+            # Get parameters
             channel = self.client.get_channel(channelName)
-            players = int(params[2]) if len(params) > 2 and not self.client.is_dm_channel(channel) else 1
             
-            quiz = CommandQuiz(self.client, self.jishoApi, message.channel, players)
+            # Question presets
+            preset = -1
+            if len(params) > 1 and len(params[2]) > 0:
+                if params[2] == "verbs":
+                    preset = 1
+                elif params[2] == "audio":
+                    preset = 0
+
+            # Player count (always check the last parameter)
+            if len(params) > 2 and params[len(params) - 1].isnumeric() and not self.client.is_dm_channel(channel):
+                players = int(params[len(params) - 1]) 
+            else: 
+                players = 1
+
+            quiz = CommandQuiz(self.client, self.jishoApi, message.channel, players, preset)
             await quiz.load(channel)
             return quiz

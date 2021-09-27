@@ -18,13 +18,14 @@ CONJUGATION_STRINGS = {
 
 class CommandQuiz():
 
-    def __init__(self, client, jishoApi, quizChannel, playerCount):
+    def __init__(self, client, jishoApi, quizChannel, playerCount, presetQuestion):
         self.client = client
         self.jishoApi = jishoApi
         self.playerCount = playerCount
         self.quizChannel = quizChannel
         self.currentAnswer = ""
         self.playerRespondedCount = 0
+        self.presetQuestionType = presetQuestion
 
     async def load(self, sourceChannel):
         self.list = await self.client.get_vocabulary(sourceChannel, True)
@@ -34,46 +35,60 @@ class CommandQuiz():
         await self.quizChannel.send(":wave:" + self.client.random_emoji() + " <( クイズが仕舞った。またね！ )")
 
     async def setup_next_question(self):
-        # Assign entry
-        currentEntry = self.list.pop(0)
+        # Reset
         questionMessage = ""
         self.playerRespondedCount = 0
 
         # Decide which question type we go for
-        questionType = random.randint(0, 2)
+        if self.presetQuestionType == -1:
+            questionType = random.randint(0, 2)
+        else:
+            questionType = self.presetQuestionType
 
-        # Audio
-        if questionType == 0:
-            # Check if entry has an audio file
-            audioFile = self.jishoApi.get_audio_file(currentEntry[0])
+        print("questionType: " + str(questionType))
 
-            if len(audioFile) > 0:
-                self.currentAnswer = currentEntry[1]
-                questionMessage = self.client.random_emoji() + " <( 聞いて訳してください )\n" + audioFile + "\n||" + currentEntry[0] + "||"
+        # Loop until we found a question
+        while True:
+            # Assign entry
+            currentEntry = self.list.pop(0)
 
-        # Verb-Conjugation 
-        if questionType == 1 and questionMessage == "":
-            # Check if it's a verb with conjugations we could ask for
-            conjugations = self.jishoApi.get_conjugations(currentEntry[0])
+            # Audio
+            if questionType == 0:
+                # Check if entry has an audio file
+                audioFile = self.jishoApi.get_audio_file(currentEntry[0])
 
-            if len(conjugations) > 0:
-                # Determine a random conjugation
-                conjugationKey = random.choice(list(Conjugations))
-                self.currentAnswer = conjugations[conjugationKey]
-                print(CONJUGATION_STRINGS[conjugationKey] + ": " + self.currentAnswer)
-                questionMessage = ":exclamation: " + currentEntry[1] + " in **" + CONJUGATION_STRINGS[conjugationKey] + "**"
+                if len(audioFile) > 0:
+                    self.currentAnswer = currentEntry[1]
+                    questionMessage = self.client.random_emoji() + " <( 聞いて訳してください )\n" + audioFile + "\n||" + currentEntry[0] + "||"
 
-        # Normal question
-        if questionMessage == "":
-            # Decide if we're asking for Japanese or German
-            if bool(random.getrandbits(1)):
-                # Japanese -> German
-                self.currentAnswer = currentEntry[1]
-                questionMessage = ":question: " + currentEntry[0]
-            else:
-                # German -> Japanese
-                self.currentAnswer = currentEntry[0]
-                questionMessage = ":question: " + currentEntry[1]
+            # Verb-Conjugation 
+            if questionType == 1 and questionMessage == "":
+                # Check if it's a verb with conjugations we could ask for
+                conjugations = self.jishoApi.get_conjugations(currentEntry[0])
+
+                if len(conjugations) > 0:
+                    # Determine a random conjugation
+                    conjugationKey = random.choice(list(Conjugations))
+                    self.currentAnswer = conjugations[conjugationKey]
+                    print(CONJUGATION_STRINGS[conjugationKey] + ": " + self.currentAnswer)
+                    questionMessage = ":exclamation: " + currentEntry[1] + " in **" + CONJUGATION_STRINGS[conjugationKey] + "**"
+
+            # Normal question
+            if questionType == 2 and questionMessage == "":
+                # Decide if we're asking for Japanese or German
+                if bool(random.getrandbits(1)):
+                    # Japanese -> German
+                    self.currentAnswer = currentEntry[1]
+                    questionMessage = ":question: " + currentEntry[0]
+                else:
+                    # German -> Japanese
+                    self.currentAnswer = currentEntry[0]
+                    questionMessage = ":question: " + currentEntry[1]
+
+            # If we found a question, stop
+            if questionMessage != "":
+                break;
+
 
         # Write out message
         await self.quizChannel.send(questionMessage)

@@ -2,16 +2,16 @@ import random
 from api.jisho import Conjugations
 
 CONJUGATION_STRINGS = {
-    Conjugations.PLAIN_NONPAST: '[Non-Keigo] Nonpast +',
-    Conjugations.PLAIN_NEGATIVE: '[Non-Keigo] Nonpast -',
-    Conjugations.PLAIN_PAST: '[Non-Keigo] Past +',
-    Conjugations.PLAIN_PAST_NEGATIVE: '[Non-Keigo] Past -',
+    Conjugations.PLAIN_NONPAST: '[Non-Keigo] Nonpast (Dictionary Form)',
+    Conjugations.PLAIN_NEGATIVE: '[Non-Keigo] Nonpast Negativ',
+    Conjugations.PLAIN_PAST: '[Non-Keigo] Past',
+    Conjugations.PLAIN_PAST_NEGATIVE: '[Non-Keigo] Past Negativ',
     Conjugations.PLAIN_TE: '[Non-Keigo] Te-Form',
     Conjugations.PLAIN_TAI: '[Non-Keigo] Tai-Form',
-    Conjugations.KEIGO_NONPAST: '[Keigo] Nonpast +',
-    Conjugations.KEIGO_NEGATIVE: '[Keigo] Nonpast -',
-    Conjugations.KEIGO_PAST: '[Keigo] Past +',
-    Conjugations.KEIGO_PAST_NEGATIVE: '[Keigo] Past -',
+    Conjugations.KEIGO_NONPAST: '[Keigo] Nonpast',
+    Conjugations.KEIGO_NEGATIVE: '[Keigo] Nonpast Negativ',
+    Conjugations.KEIGO_PAST: '[Keigo] Past',
+    Conjugations.KEIGO_PAST_NEGATIVE: '[Keigo] Past Negativ',
     Conjugations.KEIGO_TE: '[Keigo] Te-Form',
     Conjugations.KEIGO_TAI: '[Keigo] Tai-Form'
 }
@@ -48,7 +48,7 @@ class CommandQuiz():
         print("questionType: " + str(questionType))
 
         # Loop until we found a question
-        while True:
+        while len(self.list) > 0:
             # Assign entry
             currentEntry = self.list.pop(0)
 
@@ -73,8 +73,8 @@ class CommandQuiz():
                     print(CONJUGATION_STRINGS[conjugationKey] + ": " + self.currentAnswer)
                     questionMessage = ":exclamation: " + currentEntry[1] + " in **" + CONJUGATION_STRINGS[conjugationKey] + "**"
 
-            # Normal question
-            if questionType == 2 and questionMessage == "":
+            # Normal question (default if no preset question is set)
+            if questionMessage == "" and self.presetQuestionType < 1:
                 # Decide if we're asking for Japanese or German
                 if bool(random.getrandbits(1)):
                     # Japanese -> German
@@ -89,9 +89,13 @@ class CommandQuiz():
             if questionMessage != "":
                 break;
 
-
         # Write out message
-        await self.quizChannel.send(questionMessage)
+        if questionMessage != "":
+            await self.quizChannel.send(questionMessage)
+        
+        elif len(self.list) == 0:
+            await self.end()
+
 
     def check_answer(self, answer):
         print(answer + " == " + self.currentAnswer)

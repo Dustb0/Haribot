@@ -44,7 +44,7 @@ class Handler:
 
             # Check if we're at the end
             if not self.activeCommand.is_active():
-                self.end_current_command()
+                await self.end_current_command()
     
     async def end_current_command(self):
         await self.activeCommand.end()
@@ -61,7 +61,7 @@ class Handler:
             
             # Question presets
             preset = -1
-            if len(params) > 1 and len(params[2]) > 0:
+            if len(params) > 2 and len(params[2]) > 0:
                 if params[2] == "verbs":
                     preset = 1
                 elif params[2] == "audio":

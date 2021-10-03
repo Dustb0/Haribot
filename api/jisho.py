@@ -45,7 +45,6 @@ class JishoApi:
 
     def get_conjugations(self, word):
         word = word.split(",")[0]
-        print("checking inflections for " + word)
         conjugations = {}
         req = urllib.request.Request("https://www.japandict.com/" + quote(word), headers={'User-Agent': 'Mozilla/5.0'})
 

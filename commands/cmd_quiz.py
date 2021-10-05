@@ -41,7 +41,7 @@ class CommandQuiz():
 
         # Decide which question type we go for
         if self.presetQuestionType == -1:
-            questionType = random.randint(0, 2)
+            questionType = random.choice([0, 1, 1, 2])
         else:
             questionType = self.presetQuestionType
 

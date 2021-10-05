@@ -1,5 +1,6 @@
 import random
 from api.jisho import Conjugations
+from enum import Enum
 
 CONJUGATION_STRINGS = {
     Conjugations.PLAIN_NONPAST: '[Non-Keigo] Nonpast (Dictionary Form)',
@@ -15,6 +16,14 @@ CONJUGATION_STRINGS = {
     Conjugations.KEIGO_TE: '[Keigo] Te-Form',
     Conjugations.KEIGO_TAI: '[Keigo] Tai-Form'
 }
+
+class QuestionType(Enum):
+    AUDIO = 0
+    CONJUGATION = 1
+    READING = 2
+    NORMAL = 3
+
+
 
 class CommandQuiz():
 
@@ -34,6 +43,39 @@ class CommandQuiz():
     async def end(self):
         await self.quizChannel.send(":wave:" + self.client.random_emoji() + " <( クイズが仕舞った。またね！ )")
 
+    def setup_audio_question(self, currentEntry):
+        # Check if entry has an audio file
+        audioFile = self.jishoApi.get_audio_file(currentEntry[0])
+
+        if len(audioFile) > 0:
+            self.currentAnswer = currentEntry[1]
+            return self.client.random_emoji() + " <( 聞いて訳してください )\n" + audioFile + "\n||" + currentEntry[0] + "||"
+        else:
+            return ""
+
+    def setup_conjugation_question(self, currentEntry):
+        # Check if it's a verb with conjugations we could ask for
+        conjugations = self.jishoApi.get_conjugations(currentEntry[0])
+
+        if len(conjugations) > 0:
+            # Determine a random conjugation
+            conjugationKey = random.choice(list(Conjugations))
+            self.currentAnswer = conjugations[conjugationKey]
+            print(CONJUGATION_STRINGS[conjugationKey] + ": " + self.currentAnswer)
+            return ":exclamation: " + currentEntry[1] + " in **" + CONJUGATION_STRINGS[conjugationKey] + "**"
+        else:
+            return ""
+
+    def setup_reading_question(self, currentEntry):
+        reading = self.jishoApi.get_reading(currentEntry[0])
+
+        if len(reading) > 0:
+            self.currentAnswer = reading
+            return self.client.random_emoji() + " <( ローマ字で「 **" + currentEntry[0] + " **」の読みを書いてください。)"
+        else:
+            return ""
+
+
     async def setup_next_question(self):
         # Reset
         questionMessage = ""
@@ -41,7 +83,7 @@ class CommandQuiz():
 
         # Decide which question type we go for
         if self.presetQuestionType == -1:
-            questionType = random.choice([0, 1, 1, 2])
+            questionType = random.choice([QuestionType.AUDIO, QuestionType.CONJUGATION, QuestionType.CONJUGATION, QuestionType.READING, QuestionType.NORMAL])
         else:
             questionType = self.presetQuestionType
 
@@ -53,25 +95,16 @@ class CommandQuiz():
             currentEntry = self.list.pop(0)
 
             # Audio
-            if questionType == 0:
-                # Check if entry has an audio file
-                audioFile = self.jishoApi.get_audio_file(currentEntry[0])
-
-                if len(audioFile) > 0:
-                    self.currentAnswer = currentEntry[1]
-                    questionMessage = self.client.random_emoji() + " <( 聞いて訳してください )\n" + audioFile + "\n||" + currentEntry[0] + "||"
+            if questionType == QuestionType.AUDIO:
+                questionMessage = self.setup_audio_question(currentEntry)
 
             # Verb-Conjugation 
-            if questionType == 1 and questionMessage == "":
-                # Check if it's a verb with conjugations we could ask for
-                conjugations = self.jishoApi.get_conjugations(currentEntry[0])
+            if questionType == QuestionType.CONJUGATION and questionMessage == "":
+                questionMessage = self.setup_conjugation_question(currentEntry)
 
-                if len(conjugations) > 0:
-                    # Determine a random conjugation
-                    conjugationKey = random.choice(list(Conjugations))
-                    self.currentAnswer = conjugations[conjugationKey]
-                    print(CONJUGATION_STRINGS[conjugationKey] + ": " + self.currentAnswer)
-                    questionMessage = ":exclamation: " + currentEntry[1] + " in **" + CONJUGATION_STRINGS[conjugationKey] + "**"
+            # Reading
+            if questionType == QuestionType.READING and questionMessage == "":
+                questionMessage = self.setup_reading_question(currentEntry)
 
             # Normal question (default if no preset question is set)
             if questionMessage == "" and self.presetQuestionType < 1:

@@ -124,4 +124,27 @@ class JishoApi:
             else: 
                 raise httpError
 
-        return ""        
+        return "" 
+
+    def get_reading(self, word):
+        word = word.split(",")[0]
+        req = urllib.request.Request("https://www.japandict.com/" + quote(word), headers={'User-Agent': 'Mozilla/5.0'})
+
+        try:
+            with urllib.request.urlopen(req) as response:
+                page = response.read()        
+                soup = BeautifulSoup(page, "html.parser")    
+
+                # Find reading
+                readingElem = soup.find("div", {"class": "xxsmall text-muted text-center mt-2"})
+
+                if readingElem is None:
+                    return None
+
+                return readingElem.getText().strip()
+
+        except HTTPError as httpError:
+            if httpError.code == 404:
+                return None
+            else: 
+                raise httpError                

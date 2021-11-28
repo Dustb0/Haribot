@@ -2,6 +2,8 @@ import random
 from api.jisho import Conjugations
 from enum import Enum
 
+from api.quizlet import QuizletApi
+
 CONJUGATION_STRINGS = {
     Conjugations.PLAIN_NONPAST: '[Non-Keigo] Nonpast (Dictionary Form)',
     Conjugations.PLAIN_NEGATIVE: '[Non-Keigo] Nonpast Negativ',
@@ -35,9 +37,10 @@ class CommandQuiz():
         self.currentAnswer = ""
         self.playerRespondedCount = 0
         self.presetQuestionType = presetQuestion
+        self.quizlet = QuizletApi()
 
-    async def load(self, sourceChannel):
-        self.list = await self.client.get_vocabulary(sourceChannel, True)
+    async def load(self, sourceUrl):
+        self.list = self.quizlet.get_vocabulary(sourceUrl)
         await self.setup_next_question()
 
     async def end(self):

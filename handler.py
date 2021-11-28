@@ -52,13 +52,10 @@ class Handler:
 
     async def instantiate_quiz(self, message):
         params = message.content.strip().split()
-        channelName = params[1] if len(params) > 1 else ''
+        quizUrl = params[1] if len(params) > 1 else ''
 
         # Instantiate quiz command
-        if await self.verify_channel_name_arg(channelName, message):
-            # Get parameters
-            channel = self.client.get_channel(channelName)
-            
+        if await self.verify_channel_name_arg(quizUrl, message):            
             # Question presets
             preset = -1
             if len(params) > 2 and len(params[2]) > 0:
@@ -68,11 +65,11 @@ class Handler:
                     preset = 0
 
             # Player count (always check the last parameter)
-            if len(params) > 2 and params[len(params) - 1].isnumeric() and not self.client.is_dm_channel(channel):
+            if len(params) > 2 and params[len(params) - 1].isnumeric() and not self.client.is_dm_channel(message.channel):
                 players = int(params[len(params) - 1]) 
             else: 
                 players = 1
 
             quiz = CommandQuiz(self.client, self.jishoApi, message.channel, players, preset)
-            await quiz.load(channel)
+            await quiz.load(quizUrl)
             return quiz

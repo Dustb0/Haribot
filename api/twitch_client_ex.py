@@ -14,22 +14,6 @@ class TwitchClientEx:
                 if str(channel.type) == 'text' and str(channel).lower() == channelName:
                     return channel
 
-    # Returns a list of tuples containing 
-    async def get_vocabulary(self, channel, randomize):
-        list = []
-        async for msg in channel.history():
-            entry = msg.content.splitlines()
-            # Add Japanese entries
-            if len(entry) >= 2:
-                jpWord = entry[0]
-                deWord = entry[1]
-                list.append((jpWord, deWord))
-
-        if randomize:
-            # Randomize list
-            random.shuffle(list)
-
-        return list
 
     def is_dm_channel(self, channel):
         return type(channel) is discord.DMChannel

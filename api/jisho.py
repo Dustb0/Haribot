@@ -93,6 +93,53 @@ class JishoApi:
 
         return conjugations            
 
+    def get_declensions(self, word):
+        word = word.split(",")[0]
+        conjugations = {}
+        req = urllib.request.Request("https://www.japandict.com/" + quote(word), headers={'User-Agent': 'Mozilla/5.0'})
+
+        try:
+            with urllib.request.urlopen(req) as response:
+                page = response.read()        
+                soup = BeautifulSoup(page, "html.parser")
+
+                # Check if there's a heading with adjective
+                isAdjective = False
+                for heading in soup.select(".pt-5"):
+                    if "adjective " in heading.getText().lower():
+                        isAdjective = True
+                        break
+                
+                if not isAdjective:
+                    return conjugations
+
+                # Search for conjugation info
+                inflectionRows = soup.select(".col-12 .card-body .col-lg-6 tr:not(.bg-gray-200)")
+
+                if inflectionRows is None:
+                    return conjugations
+
+                # Gather inflections: Non-keigo
+                conjugations[Conjugations.PLAIN_NONPAST] = inflectionRows[0].select_one('.ps-3').getText()
+                conjugations[Conjugations.PLAIN_NEGATIVE] = inflectionRows[1].select_one('.ps-3').getText()
+                conjugations[Conjugations.PLAIN_PAST] = inflectionRows[2].select_one('.ps-3').getText()
+                conjugations[Conjugations.PLAIN_PAST_NEGATIVE] = inflectionRows[3].select_one('.ps-3').getText()
+                conjugations[Conjugations.PLAIN_TE] = inflectionRows[4].select_one('.ps-3').getText()
+
+                # Gather inflections: Keigo
+                conjugations[Conjugations.KEIGO_NONPAST] = inflectionRows[6].select_one('.ps-3').getText()
+                conjugations[Conjugations.KEIGO_NEGATIVE] = inflectionRows[7].select_one('.ps-3').getText()
+                conjugations[Conjugations.KEIGO_PAST] = inflectionRows[8].select_one('.ps-3').getText()
+                conjugations[Conjugations.KEIGO_PAST_NEGATIVE] = inflectionRows[9].select_one('.ps-3').getText()
+
+        except HTTPError as httpError:
+            if httpError.code == 404:
+                return ""
+            else: 
+                raise httpError
+
+        return conjugations
+
     def get_example_sentence(self, word):
         req = urllib.request.Request("https://jisho.org/word/" + quote(word))
 

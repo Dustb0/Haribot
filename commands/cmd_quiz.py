@@ -60,10 +60,15 @@ class CommandQuiz():
         # Check if it's a verb with conjugations we could ask for
         conjugations = self.jishoApi.get_conjugations(currentEntry[0])
 
+        # If no conjugations were found, check if it might be an adjective
+        if len(conjugations) == 0:
+            conjugations = self.jishoApi.get_declensions(currentEntry[0])
+
         if len(conjugations) > 0:
             # Determine a random conjugation
-            conjugationKey = random.choice(list(Conjugations))
+            conjugationKey = random.choice(list(conjugations))
             self.currentAnswer = conjugations[conjugationKey]
+            
             print(CONJUGATION_STRINGS[conjugationKey] + ": " + self.currentAnswer)
             return ":exclamation: " + currentEntry[1] + " in **" + CONJUGATION_STRINGS[conjugationKey] + "**"
         else:

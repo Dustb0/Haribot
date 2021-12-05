@@ -12,6 +12,8 @@ class Handler:
         self.client = client
         self.activeCommand = None
 
+
+
     # Checks if the message contains a channel name. If not responds to the user
     async def verify_channel_name_arg(self, channelName, message):
         if len(channelName) == 0:
@@ -20,15 +22,15 @@ class Handler:
 
         return True
 
+
+
     async def process_message(self, message):
         # Check command
         if message.content.startswith('!translateQuiz'):
             # Example sentence translation 
-            channelName = message.content.replace('!translateQuiz', '').strip()
-
-            if await self.verify_channel_name_arg(channelName, message):
-                channel = self.client.get_channel(channelName)
-                await process_translate_quiz(self.jishoApi, self.client, message, channel)
+            quizUrl = message.content.replace('!translateQuiz', '').strip()
+            await process_translate_quiz(self.jishoApi, self.client, message, quizUrl)
+                
 
         if message.content.startswith('!quiz'):
             # Quiz
@@ -46,9 +48,13 @@ class Handler:
             if not self.activeCommand.is_active():
                 await self.end_current_command()
     
+
+
     async def end_current_command(self):
         await self.activeCommand.end()
         self.activeCommand = None
+
+
 
     async def instantiate_quiz(self, message):
         params = message.content.strip().split()

@@ -1,12 +1,16 @@
 import random
 
+from api.quizlet import QuizletApi
+
 # Provides a random example sentence from Jisho + its translation
-async def process_translate_quiz(jishoApi, client, message, channel):
-    sentence = await get_sentence(jishoApi, client, channel)
+async def process_translate_quiz(jishoApi, client, message, quizletUrl):
+    sentence = get_sentence(jishoApi, quizletUrl)
     await message.channel.send(client.random_emoji() + ':point_down: <( 訳してください )\n\n' + sentence)
     
-async def get_sentence(jishoApi, client, channel):
-    list = await client.get_vocabulary(channel, True)
+def get_sentence(jishoApi, quizletUrl):
+    quizlet = QuizletApi()
+    list = quizlet.get_vocabulary(quizletUrl)
+    random.shuffle(list)
 
     for entry in list:
         jpWord = entry[0]

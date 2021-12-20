@@ -1,10 +1,20 @@
 import urllib.request
 import random
+import pickle
 from urllib.error import HTTPError
 from bs4 import BeautifulSoup
 
 
 class QuizletApi:
+
+  def cache_vocabulary(self, url, name):
+    list = self.get_vocabulary(url)
+    with open('quiz/' + name + '.quiz', 'wb') as file:
+      pickle.dump(list, file)
+
+  def load_cache(self, name):
+    with open('quiz/' + name + '.quiz', 'rb') as file:
+      return pickle.load(file)
 
   def get_vocabulary(self, url):
     list = []

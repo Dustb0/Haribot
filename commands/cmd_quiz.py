@@ -39,12 +39,18 @@ class CommandQuiz():
         self.presetQuestionType = presetQuestion
         self.quizlet = QuizletApi()
 
+
+
     async def load(self, quizName):
         self.list = self.quizlet.load_cache(quizName)
         await self.setup_next_question()
 
+
+
     async def end(self):
         await self.quizChannel.send(":wave:" + self.client.random_emoji() + " <( クイズが仕舞った。またね！ )")
+
+
 
     def setup_audio_question(self, currentEntry):
         # Check if entry has an audio file
@@ -55,6 +61,8 @@ class CommandQuiz():
             return self.client.random_emoji() + " <( 聞いて訳してください )\n" + audioFile + "\n||" + currentEntry[0] + "||"
         else:
             return ""
+
+
 
     def setup_conjugation_question(self, currentEntry):
         # Check if it's a verb with conjugations we could ask for
@@ -74,6 +82,8 @@ class CommandQuiz():
         else:
             return ""
 
+
+
     def setup_reading_question(self, currentEntry):
         reading = self.jishoApi.get_reading(currentEntry[0])
 
@@ -84,6 +94,7 @@ class CommandQuiz():
             return ""
 
 
+
     async def setup_next_question(self):
         # Reset
         questionMessage = ""
@@ -91,7 +102,7 @@ class CommandQuiz():
 
         # Decide which question type we go for
         if self.presetQuestionType == -1:
-            questionType = random.choice([QuestionType.AUDIO, QuestionType.CONJUGATION, QuestionType.CONJUGATION, QuestionType.READING, QuestionType.NORMAL])
+            questionType = random.choice([QuestionType.AUDIO, QuestionType.CONJUGATION, QuestionType.CONJUGATION, QuestionType.READING])
         else:
             questionType = self.presetQuestionType
 
@@ -114,21 +125,9 @@ class CommandQuiz():
             if questionType == QuestionType.READING and questionMessage == "":
                 questionMessage = self.setup_reading_question(currentEntry)
 
-            # Normal question (default if no preset question is set)
-            if questionMessage == "" and self.presetQuestionType < 1:
-                # Decide if we're asking for Japanese or German
-                if bool(random.getrandbits(1)):
-                    # Japanese -> German
-                    self.currentAnswer = currentEntry[1]
-                    questionMessage = ":question: " + currentEntry[0]
-                else:
-                    # German -> Japanese
-                    self.currentAnswer = currentEntry[0]
-                    questionMessage = ":question: " + currentEntry[1]
-
             # If we found a question, stop
             if questionMessage != "":
-                break;
+                break
 
         # Write out message
         if questionMessage != "":
@@ -136,6 +135,7 @@ class CommandQuiz():
         
         elif len(self.list) == 0:
             await self.end()
+
 
 
     def check_answer(self, answer):
@@ -147,10 +147,14 @@ class CommandQuiz():
 
         return False  
     
+
+
     def is_active(self):
         # Check if there are still questions and if we're on the last question
         # check if everyone replied
         return len(self.list) > 0 or self.playerRespondedCount < self.playerCount
+
+
 
     async def process_message(self, message):
         self.playerRespondedCount += 1

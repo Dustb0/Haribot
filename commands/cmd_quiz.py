@@ -39,8 +39,8 @@ class CommandQuiz():
         self.presetQuestionType = presetQuestion
         self.quizlet = QuizletApi()
 
-    async def load(self, sourceUrl):
-        self.list = self.quizlet.get_vocabulary(sourceUrl)
+    async def load(self, quizName):
+        self.list = self.quizlet.load_cache(quizName)
         await self.setup_next_question()
 
     async def end(self):

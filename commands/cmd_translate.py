@@ -3,13 +3,13 @@ import random
 from api.quizlet import QuizletApi
 
 # Provides a random example sentence from Jisho + its translation
-async def process_translate_quiz(jishoApi, client, message, quizletUrl):
-    sentence = get_sentence(jishoApi, quizletUrl)
+async def process_translate_quiz(jishoApi, client, message, quizName):
+    sentence = get_sentence(jishoApi, quizName)
     await message.channel.send(client.random_emoji() + ':point_down: <( 訳してください )\n\n' + sentence)
     
-def get_sentence(jishoApi, quizletUrl):
+def get_sentence(jishoApi, quizName):
     quizlet = QuizletApi()
-    list = quizlet.get_vocabulary(quizletUrl)
+    list = quizlet.load_cache(quizName)
     random.shuffle(list)
 
     for entry in list:

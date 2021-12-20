@@ -15,7 +15,7 @@ class Handler:
 
 
     # Checks if the message contains a channel name. If not responds to the user
-    async def verify_channel_name_arg(self, channelName, message):
+    async def verify_params(self, channelName, message):
         if len(channelName) == 0:
             await message.channel.send(':point_up:' + self.client.random_emoji() + ' <( チャネルを書いてください! )')
             return False
@@ -58,10 +58,10 @@ class Handler:
 
     async def instantiate_quiz(self, message):
         params = message.content.strip().split()
-        quizUrl = params[1] if len(params) > 1 else ''
+        quizName = params[1] if len(params) > 1 else ''
 
         # Instantiate quiz command
-        if await self.verify_channel_name_arg(quizUrl, message):            
+        if await self.verify_params(quizName, message):            
             # Question presets
             preset = -1
             if len(params) > 2 and len(params[2]) > 0:
@@ -77,5 +77,5 @@ class Handler:
                 players = 1
 
             quiz = CommandQuiz(self.client, self.jishoApi, message.channel, players, preset)
-            await quiz.load(quizUrl)
+            await quiz.load(quizName)
             return quiz

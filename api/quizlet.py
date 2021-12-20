@@ -8,7 +8,11 @@ from bs4 import BeautifulSoup
 class QuizletApi:
 
   def cache_vocabulary(self, url, name):
-    list = self.get_vocabulary(url)
+    list = []
+
+    for quizUrl in url:
+      list.extend(self.get_vocabulary(quizUrl))   
+
     with open('quiz/' + name + '.quiz', 'wb') as file:
       pickle.dump(list, file)
 

@@ -5,18 +5,18 @@ from enum import Enum
 from api.quizlet import QuizletApi
 
 CONJUGATION_STRINGS = {
-    Conjugations.PLAIN_NONPAST: '[Non-Keigo] Nonpast (Dictionary Form)',
-    Conjugations.PLAIN_NEGATIVE: '[Non-Keigo] Nonpast Negativ',
-    Conjugations.PLAIN_PAST: '[Non-Keigo] Past',
-    Conjugations.PLAIN_PAST_NEGATIVE: '[Non-Keigo] Past Negativ',
-    Conjugations.PLAIN_TE: '[Non-Keigo] Te-Form',
-    Conjugations.PLAIN_TAI: '[Non-Keigo] Tai-Form',
-    Conjugations.KEIGO_NONPAST: '[Keigo] Nonpast',
-    Conjugations.KEIGO_NEGATIVE: '[Keigo] Nonpast Negativ',
-    Conjugations.KEIGO_PAST: '[Keigo] Past',
-    Conjugations.KEIGO_PAST_NEGATIVE: '[Keigo] Past Negativ',
-    Conjugations.KEIGO_TE: '[Keigo] Te-Form',
-    Conjugations.KEIGO_TAI: '[Keigo] Tai-Form'
+    Conjugations.PLAIN_NONPAST: '[Casual :woman_tipping_hand:] Present (Dictionary Form)',
+    Conjugations.PLAIN_NEGATIVE: '[Casual :woman_tipping_hand:] Present Negativ :x:',
+    Conjugations.PLAIN_PAST: '[Casual :woman_tipping_hand:] Past',
+    Conjugations.PLAIN_PAST_NEGATIVE: '[Casual :woman_tipping_hand:] Past Negativ :x:',
+    Conjugations.PLAIN_TE: '[Casual :woman_tipping_hand:] Te-Form',
+    Conjugations.PLAIN_TAI: '[Casual :woman_tipping_hand:] Tai-Form',
+    Conjugations.KEIGO_NONPAST: '[Keigo :bow:] Present',
+    Conjugations.KEIGO_NEGATIVE: '[Keigo :bow:] Present Negativ :x:',
+    Conjugations.KEIGO_PAST: '[Keigo :bow:] Past',
+    Conjugations.KEIGO_PAST_NEGATIVE: '[Keigo :bow:] Past Negativ :x:',
+    Conjugations.KEIGO_TE: '[Keigo :bow:] Te-Form',
+    Conjugations.KEIGO_TAI: '[Keigo :bow:] Tai-Form'
 }
 
 class QuestionType(Enum):

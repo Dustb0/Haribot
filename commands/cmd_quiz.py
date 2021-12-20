@@ -43,6 +43,11 @@ class CommandQuiz():
 
     async def load(self, quizName):
         self.list = self.quizlet.load_cache(quizName)
+
+        # Limit questions if there are multiple players
+        if self.playerCount > 1:
+            self.list = self.list[:15]
+
         await self.setup_next_question()
 
 

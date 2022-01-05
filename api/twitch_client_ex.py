@@ -22,5 +22,8 @@ class TwitchClientEx:
     def random_emoji(self):
         return str(random.choice(self.client.emojis))
 
+    def get_random_hand_emoji(self):
+        return random.choice([':punch:', ':fingers_crossed:', ':v:', ':metal:', ':pinching_hand:', ':point_left:', '', ':raised_hand:', ':wave:'])
+
     def get(self):
         return self.client

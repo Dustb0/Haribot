@@ -19,13 +19,15 @@ async def daily_quiz(client, quizfile, channelName):
   # Get quiz channel
   channel = client.get_channel(channelName)
 
-  questionType = random.randint(0, 3)
+  questionType = random.randint(0, 4)
   if questionType == 0:
     quizText = quiz_reading(vocab, jisho)
   elif questionType == 1:
     quizText = image_guess(vocab, imageSearch)
   elif questionType == 2:
     quizText = conjugation_quiz(vocab, jisho)
+  elif questionType == 3:
+    quizText = audio_guess(vocab, jisho)
   else:
     quizText = example_sentence(vocab, jisho)
 
@@ -91,6 +93,21 @@ def conjugation_quiz(vocab, jisho):
 
   return question
   
-def example_sentence(vocab, jisho): 
+def example_sentence(vocab, jisho):
   question = '**Übersetze folgenden Beispielsatz:**\n'
   return question + get_example_sentence(vocab, jisho)
+
+def audio_guess(vocab, jisho):
+  audioFile = None
+  answer = None
+
+  for entry in vocab:
+    answer = entry
+    audioFile = jisho.get_audio_file(answer[0])
+
+    if len(audioFile) > 0:
+      break
+
+  question = '**Welches Wort wird hier gesprochen?**\n' + audioFile + '\n'
+  question += 'Lösung: ||' + answer[0] + ' (' + answer[1] + ') ||'
+  return question

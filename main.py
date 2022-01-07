@@ -38,6 +38,6 @@ async def on_message(message):
 
 @tasks.loop(hours=48)
 async def daily_quiz_job():
-  await daily_quiz(client, 'manu', 'quiz')
+  await daily_quiz(client, 'manu', 'quiz2')
 
 client.get().run(os.environ['TOKEN'])

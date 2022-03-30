@@ -1,31 +1,23 @@
-import urllib.request
 import random
 from urllib.parse import quote
-from urllib.error import HTTPError
 from bs4 import BeautifulSoup
+from requests_html import AsyncHTMLSession
 
 class ImageSearch:
 
-  def get_image(self, term):
-    url = 'https://www.shutterstock.com/de/search/' + quote(term) + '?image_type=photo'
+  async def get_image(self, term):
+    import nest_asyncio
+    nest_asyncio.apply()
 
-    req = urllib.request.Request(url, headers={
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
-      'sec-ch-ua-platform': "Windows",
-      'sec-ch-ua-platform': "Windows"
-      })
+    # Run JavaScript code on webpage
+    session = AsyncHTMLSession()
+    resp = await session.get('https://www.irasutoya.com/search?q=' + quote(term))    
+    await resp.html.arender()
 
-    try:
-      with urllib.request.urlopen(req) as response:
-        page = response.read()        
-        soup = BeautifulSoup(page, "html.parser")
+    soup = BeautifulSoup(resp.html.html, "lxml")
+    
+    images = soup.select(".boxim img", limit=10)
+    print(images)
 
-        images = soup.select(".jss230 img", limit=10)
-        image = random.choice(images)
-        return image['src']
-
-    except HTTPError as httpError:
-      if httpError.code == 404:
-          return None
-      else: 
-          raise httpError     
+    image = random.choice(images)
+    return image['src'] 

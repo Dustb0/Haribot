@@ -1,2 +1,4 @@
 discord==1.0.1
 beautifulsoup4==4.9.3
+requests_html==0.10.0
+nest_asyncio==1.5.4

@@ -19,15 +19,20 @@ async def daily_quiz(client, quizfile, channelName):
   # Get quiz channel
   channel = client.get_channel(channelName)
 
-  questionType = random.randint(0, 4)
-  if questionType == 0:
+  questionType = random.randint(0, 100)
+
+  if questionType >= 0 and questionType <= 20:
     quizText = quiz_reading(vocab, jisho)
-  elif questionType == 1:
-    quizText = image_guess(vocab, imageSearch)
-  elif questionType == 2:
+  
+  elif questionType >= 21 and questionType <= 50:
+    quizText = await image_guess(vocab, imageSearch)
+  
+  elif questionType >= 51 and questionType <= 80:
     quizText = conjugation_quiz(vocab, jisho)
-  elif questionType == 3:
+  
+  elif questionType >= 81 and questionType <= 91:
     quizText = audio_guess(vocab, jisho)
+  
   else:
     quizText = example_sentence(vocab, jisho)
 
@@ -48,7 +53,7 @@ def quiz_reading(vocab, jisho):
 
   return question
 
-def image_guess(vocab, imageSearch):
+async def image_guess(vocab, imageSearch):
   entries = sample(vocab, 3)
   question = '**Welches Wort passt zu dem Bild?**\n'
 
@@ -60,9 +65,9 @@ def image_guess(vocab, imageSearch):
   question += 'Lösung: ||' + answer[0] + ' (' + answer[1] + ')||\n'
 
   # Get question
-  searchTerm = answer[1].split(',')[0]
+  searchTerm = answer[0].split(',')[0]
   print(searchTerm)
-  image = imageSearch.get_image(searchTerm)
+  image = await imageSearch.get_image(searchTerm)
   question += image
 
   return question
